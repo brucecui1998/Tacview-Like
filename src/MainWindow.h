@@ -21,4 +21,5 @@ private:
 
     OpenGLWidget *glWidget;
     FlightData flightData; // 数据模型
+    QAction *playAction = nullptr;
 };

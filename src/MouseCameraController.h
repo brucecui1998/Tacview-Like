@@ -18,5 +18,5 @@ private:
     QPoint lastPos;
     float rotX = 0.0f;
     float rotY = 0.0f;
-    float distance = 10.0f;
+    float distance = 2.5f;
 };

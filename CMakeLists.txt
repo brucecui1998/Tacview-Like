@@ -25,6 +25,11 @@ set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 file(GLOB_RECURSE SOURCES ${SOURCE_DIR}/*.cpp)
 file(GLOB_RECURSE HEADERS ${SOURCE_DIR}/*.h)
 
+# 添加 tinyobjloader 源码
+set(SRC_LIB
+    src/thirdparty/tiny_obj_loader.cc
+)
+
 # Qt 包含目录
 set(CMAKE_AUTOMOC ON) # 处理 Q_OBJECT 宏
 set(CMAKE_AUTORCC ON) # 编译 .qrc 资源文件，如图片、样式等
@@ -33,7 +38,7 @@ set(CMAKE_AUTOUIC ON) # 将 .ui 文件转为 .h/.cpp，生成界面布局代码
 
 
 # 添加可执行文件
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${SRC_LIB})
 
 if (MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)

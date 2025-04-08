@@ -25,6 +25,14 @@ void MainWindow::createMenus() {
     connect(openAction, &QAction::triggered, this, &MainWindow::onOpenAcmiFile);
     fileMenu->addAction(openAction);
 
+    // ✅ 添加播放按钮
+    playAction = new QAction("&Play", this);
+    playAction->setEnabled(false);  // 初始禁用
+    connect(playAction, &QAction::triggered, [this]() {
+        glWidget->startPlayback();  // 调用播放函数
+    });
+    fileMenu->addAction(playAction);
+
     QAction *exitAction = new QAction("&Exit", this);
     connect(exitAction, &QAction::triggered, this, &QWidget::close);
     fileMenu->addAction(exitAction);
@@ -36,8 +44,10 @@ void MainWindow::onOpenAcmiFile() {
         AcmiParser parser(filePath);
         if (parser.parse()) {
             flightData = parser.getFlightData();
-            glWidget->setFlightData(flightData); // 将数据传递给 OpenGLWidget 渲染
+            glWidget->setFlightData(flightData);
             QMessageBox::information(this, "ACMI Loaded", "Loaded file: " + filePath);
+
+            playAction->setEnabled(true);  // ✅ 允许播放
         } else {
             QMessageBox::warning(this, "Error", "Failed to parse ACMI file.");
         }

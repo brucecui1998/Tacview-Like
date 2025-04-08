@@ -34,7 +34,8 @@ void AcmiParser::parseLine(const QString& line) {
 
 void AcmiParser::parseFrameMarker(const QString &line) {
     QString timeStr = line.mid(1);
-    currentTime = timeStr.toDouble();
+    double rawTime = timeStr.toDouble();
+    currentTime = std::round(rawTime * 100.0) / 100.0; //保留2位小数
 }
 
 void AcmiParser::parseObjectState(const QString &line) {

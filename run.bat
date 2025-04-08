@@ -11,10 +11,10 @@ echo === [CMake] Generating build files ===
 cmake -S . -B build -G "Visual Studio 17 2022" -A x64
 
 echo === [CMake] Building configuration ===
-cmake --build build --config Debug --parallel
+cmake --build build --config Release --parallel
 
 REM 进入可执行输出目录
-cd /d %~dp0\bin\Debug
+cd /d %~dp0\bin\Release
 
 echo === Run TacViewLikeDemo.exe ===
 TacViewLike.exe
