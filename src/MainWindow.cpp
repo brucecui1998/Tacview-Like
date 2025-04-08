@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
     glWidget = new OpenGLWidget(this);
     setCentralWidget(glWidget);
-    setWindowTitle("TacView-Like Demo with ACMI Support");
+    setWindowTitle("TacViewLike");
 
     createMenus();
 }

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(TacViewLikeDemo)
+project(TacViewLike)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -18,6 +18,8 @@ find_package(OpenGL REQUIRED)
 # 设置输出路径到 bin 目录
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/$<CONFIG>)
 
+
+
 # 源码路径
 set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 file(GLOB_RECURSE SOURCES ${SOURCE_DIR}/*.cpp)
@@ -35,7 +37,12 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 if (MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
+    # 设置 Visual Studio 调试时的工作目录
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/$<CONFIG>"
+    )
 endif()
+
 
 
 # 链接库
@@ -52,3 +59,13 @@ if(WIN32)
     set_target_properties(${PROJECT_NAME} PROPERTIES 
     VS_DEBUGGER_ENVIRONMENT "PATH=%PATH%;${QT5_BIN_DIR}")
 endif()
+
+# 设置资源目录和目标目录
+set(RESOURCE_DIR "${CMAKE_SOURCE_DIR}/resources")
+set(OUTPUT_RESOURCE_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/resources")
+
+# 拷贝资源目录到 bin/Debug 或 bin/Release
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${RESOURCE_DIR}" "${OUTPUT_RESOURCE_DIR}"
+)
