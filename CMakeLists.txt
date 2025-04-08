@@ -28,14 +28,22 @@ set(CMAKE_AUTOMOC ON) # 处理 Q_OBJECT 宏
 set(CMAKE_AUTORCC ON) # 编译 .qrc 资源文件，如图片、样式等
 set(CMAKE_AUTOUIC ON) # 将 .ui 文件转为 .h/.cpp，生成界面布局代码
 
+
+
 # 添加可执行文件
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+
+if (MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
+endif()
+
 
 # 链接库
 target_link_libraries(${PROJECT_NAME} 
     Qt5::Widgets
     Qt5::OpenGL
     OpenGL::GL
+    OpenGL::GLU  # 添加这行
 )
 
 # 添加 Qt bin 路径到运行时 PATH（避免复制 DLL）

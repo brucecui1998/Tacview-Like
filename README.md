@@ -36,7 +36,7 @@
 
 | 组件 | 名称 | 说明 |
 |------|------|------|
-| 主语言 | C++17 / C++20 | 高性能、跨平台 |
+| C++ | Visual Studio 17 2022 | 高性能、跨平台 |
 | 渲染 | OpenGL 3.3+ | 自定义图形渲染 |
 | UI | Qt 5.15.10 | 稳定成熟，兼容性强 |
 | 窗口/输入 | GLFW | 与 OpenGL 高度兼容，轻量级 |
@@ -94,6 +94,6 @@
 ```bash
 mkdir build
 cd build
-cmake ..
-make -j
-./TelemetryViewer  # or .exe on Windows
+cmake .. -G "Visual Studio 17 2022" -A x64
+cmake --build . --config Release
+..\run.bat  # Only on Windows
