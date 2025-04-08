@@ -1,0 +1,46 @@
+cmake_minimum_required(VERSION 3.15)
+project(TacViewLikeDemo)
+
+set(CMAKE_CXX_STANDARD 17)
+
+
+if(NOT DEFINED Qt5_DIR)
+    set(Qt5_DIR "D:/Software/qt5.15.10-win64-debug-release-msvc2022-shared/msvc64/lib/cmake/Qt5")
+endif()
+find_package(Qt5 REQUIRED COMPONENTS Widgets OpenGL)
+# 提取 Qt 的 bin 路径（基于 Qt5_DIR）
+get_filename_component(QT5_BASE_DIR "${Qt5_DIR}/../../.." ABSOLUTE)
+set(QT5_BIN_DIR "${QT5_BASE_DIR}/bin")
+
+# 查找 OpenGL
+find_package(OpenGL REQUIRED)
+
+# 设置输出路径到 bin 目录
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/$<CONFIG>)
+
+# 源码路径
+set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
+file(GLOB_RECURSE SOURCES ${SOURCE_DIR}/*.cpp)
+file(GLOB_RECURSE HEADERS ${SOURCE_DIR}/*.h)
+
+# Qt 包含目录
+set(CMAKE_AUTOMOC ON) # 处理 Q_OBJECT 宏
+set(CMAKE_AUTORCC ON) # 编译 .qrc 资源文件，如图片、样式等
+set(CMAKE_AUTOUIC ON) # 将 .ui 文件转为 .h/.cpp，生成界面布局代码
+
+# 添加可执行文件
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+
+# 链接库
+target_link_libraries(${PROJECT_NAME} 
+    Qt5::Widgets
+    Qt5::OpenGL
+    OpenGL::GL
+)
+
+# 添加 Qt bin 路径到运行时 PATH（避免复制 DLL）
+# 注意：这仅在编译器支持运行时 PATH 的平台有效
+if(WIN32)
+    set_target_properties(${PROJECT_NAME} PROPERTIES 
+    VS_DEBUGGER_ENVIRONMENT "PATH=%PATH%;${QT5_BIN_DIR}")
+endif()
