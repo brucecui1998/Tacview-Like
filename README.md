@@ -90,10 +90,18 @@
 
 ### 构建示例（Linux / Windows）
 
-```bash
-mkdir build
-cd build
-cmake .. -G "Visual Studio 17 2022" -A x64
-cmake --build . --config Debug --parallel
-..\run.bat  # Only on Windows
+run.bat 支持一个可选参数：
+
+    第一个参数：Qt 安装的 base 路径
+    示例：D:\Software\qt5.15.10-win64-debug-release-msvc2022-shared\msvc64
+    如果未传入参数，则会尝试从环境变量 QT_ROOT 中读取路径。
+
+推荐用法：使用 Windows CMD 终端运行
+
+请 使用 CMD 命令提示符（不是 PowerShell），否则 set 设置的环境变量在 run.bat 中将不可见。(适用于反复调试)
+
+```cmd
+set QT_ROOT=D:\Software\qt5.15.10-win64-debug-release-msvc2022-shared\msvc64
+
+.\run.bat
 ```
