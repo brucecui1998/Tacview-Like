@@ -98,7 +98,6 @@ void OpenGLWidget::paintGL() {
 
     // 经纬度转球面
     QMap<QString, ObjectState> stateMap = flightData.getObjectStatesAt(currentTime);
-    qDebug() << "[paintGL] currentTime =" << currentTime;
     if (stateMap.contains("A0100")) { // 示例ID（你可以遍历所有 ID）
         const ObjectState &state = stateMap["A0100"];
 

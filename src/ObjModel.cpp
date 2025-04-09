@@ -1,6 +1,6 @@
 #include <windows.h>    // ✅ 必须在最前
 #include "ObjModel.h"
-#include "thirdparty/tiny_obj_loader.h"
+#include "thirdparty/tiny_obj_loader/tiny_obj_loader.h"
 #include <QFile>
 #include <QDebug>
 #include <GL/gl.h>

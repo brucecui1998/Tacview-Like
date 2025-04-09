@@ -16,7 +16,5 @@ cmake --build build --config Release --parallel
 REM 进入可执行输出目录
 cd /d %~dp0\bin\Release
 
-echo === Run TacViewLikeDemo.exe ===
+echo === Run TacViewLike.exe ===
 TacViewLike.exe
-
-pause
