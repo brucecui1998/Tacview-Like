@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
     glWidget = new OpenGLWidget(this);
     setCentralWidget(glWidget);
     setWindowTitle("TacviewLike");
+    setWindowIcon(QIcon("resources/Icon/exe.png"));
     resize(1024, 768);
     createMenus();
 
