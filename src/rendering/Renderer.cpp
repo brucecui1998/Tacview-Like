@@ -47,7 +47,7 @@ void Renderer::renderScene(const SceneManager& scene, const QVector3D& eye) {
                           .arg(lat, 0, 'f', 10)
                           .arg(alt, 0, 'f', 10);
 
-    QVector3D pos = geoToSphere(lat, lon, EARTH_RADIUS + HEIGHT_EXAGGERATION * alt / 100000.0);
+    QVector3D pos = geoToSphere(lat, lon, EARTH_RADIUS + HEIGHT_EXAGGERATION * alt / 6371000.0);
 
     qDebug() << "[Renderer] Converted 3D position:" << pos;
 
