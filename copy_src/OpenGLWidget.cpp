@@ -1,4 +1,5 @@
 #include "OpenGLWidget.h"
+#include <QOpenGLFunctions>  // 为了 initializeOpenGLFunctions
 #include <GL/glu.h>
 #include <QDebug>
 #include <QtMath>

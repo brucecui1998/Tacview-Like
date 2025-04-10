@@ -3,6 +3,10 @@ project(TacViewLike)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# 添加子模块头文件路径
+include_directories(
+    ${CMAKE_SOURCE_DIR}/src
+)
 
 if(NOT DEFINED Qt5_DIR)
     set(Qt5_DIR "D:/Software/qt5.15.10-win64-debug-release-msvc2022-shared/msvc64/lib/cmake/Qt5")
