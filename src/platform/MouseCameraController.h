@@ -23,7 +23,7 @@
  * 设置当前视角；在 mouseEvent 中调用 mousePress/mouseMove/wheelZoom 响应输入。
  */
 
-
+#include "rendering/Config.h"
 #include <QPoint>
 #include <QMatrix4x4>
 #include <QVector3D>
@@ -37,10 +37,10 @@ public:
     void wheelZoom(int delta);
     void applyCamera();
     float getRotationY() const;
-
+    QVector3D getEye() const;
 private:
     QPoint lastPos;
     float rotX = 0.0f;
     float rotY = 0.0f;
-    float distance = 1.5f;
+    float distance = CAMERA_DEFAULT_DISTANCE;
 };

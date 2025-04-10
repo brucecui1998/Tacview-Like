@@ -23,7 +23,8 @@ void MouseCameraController::mouseMove(int x, int y) {
 void MouseCameraController::wheelZoom(int delta) {
     const float zoomSensitivity = 0.0005f;
     distance -= delta * zoomSensitivity;
-    distance = qBound(1.0f, distance, 100.0f);  // 增大最大范围
+    distance = qBound(0.1f, distance, 100.0f);  // 增大最大范围
+
 }
 
 void MouseCameraController::applyCamera() {
@@ -38,8 +39,19 @@ void MouseCameraController::applyCamera() {
     gluLookAt(rotatedEye.x(), rotatedEye.y(), rotatedEye.z(),
               0, 0, 0,
               0, 0, 1);
+
+
 }
 
 float MouseCameraController::getRotationY() const {
     return rotY;
 }
+
+QVector3D MouseCameraController::getEye() const {
+    QVector3D eye(0, -distance, distance);
+    QMatrix4x4 mat;
+    mat.rotate(rotY, 0, 0, 1);
+    mat.rotate(rotX, 1, 0, 0);
+    return mat * eye;
+}
+
