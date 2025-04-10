@@ -47,6 +47,12 @@ void OpenGLWidget::startPlayback() {
 
 void OpenGLWidget::initializeGL() {
     initializeOpenGLFunctions();
+
+    qDebug() << "OpenGL Version:" << reinterpret_cast<const char*>(glGetString(GL_VERSION));
+    qDebug() << "GLSL Version:" << reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
+    qDebug() << "Vendor:" << reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+    qDebug() << "Renderer:" << reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+
     renderer.initialize();
 }
 
