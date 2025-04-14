@@ -59,6 +59,39 @@ void OpenGLWidget::initializeGL() {
     renderer.initialize();
 }
 
+// 绘制 XYZ 坐标轴方便理解
+void OpenGLWidget::drawCoordinateAxes() {
+    // 保存当前矩阵状态
+    glPushMatrix();
+
+    // 设置线宽
+    glLineWidth(2);
+
+    // X 轴（红色）
+    glColor3f(1.0f, 0.0f, 0.0f);  // 红色
+    glBegin(GL_LINES);
+    glVertex3f(0.0f, 0.0f, 0.0f);  // 原点
+    glVertex3f(10000.0f, 0.0f, 0.0f);  // X轴正方向
+    glEnd();
+
+    // Y 轴（绿色）
+    glColor3f(0.0f, 1.0f, 0.0f);  // 绿色
+    glBegin(GL_LINES);
+    glVertex3f(0.0f, 0.0f, 0.0f);  // 原点
+    glVertex3f(0.0f, 10000.0f, 0.0f);  // Y轴正方向
+    glEnd();
+
+    // Z 轴（蓝色）
+    glColor3f(0.0f, 0.0f, 1.0f);  // 蓝色
+    glBegin(GL_LINES);
+    glVertex3f(0.0f, 0.0f, 0.0f);  // 原点
+    glVertex3f(0.0f, 0.0f, 10000.0f);  // Z轴正方向
+    glEnd();
+
+    // 恢复之前的矩阵状态
+    glPopMatrix();
+}
+
 
 void OpenGLWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -73,6 +106,8 @@ void OpenGLWidget::paintGL() {
     renderer.renderScene(scene, eye);
 
     //hudRenderer.drawCompass(camera.getRotationY(), width(), height());
+    // 绘制 XYZ 坐标轴方便理解
+    drawCoordinateAxes();
 }
 
 

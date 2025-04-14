@@ -18,7 +18,7 @@ void MouseCameraController::mouseMove(int x, int y, Qt::MouseButtons buttons) {
         // 左键保持原有轨道控制
         rotX += dy * rotateSensitivity;
         rotY += dx * rotateSensitivity;
-        rotX = qBound(-89.9f, rotX, 89.9f);
+        //rotX = qBound(-89.9f, rotX, 89.9f);
     } else if (buttons & Qt::RightButton) {
         // ✅ 仅高度变化（垂直方向控制）
         heightOffset -= dy * verticalMoveSensitivity;

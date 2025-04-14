@@ -32,7 +32,7 @@ QVector3D geoToSphere(double latDeg, double lonDeg, double radius) {
 void Renderer::renderScene(const SceneManager& scene, const QVector3D& eye) {
     QMap<QString, ObjectState> stateMap = scene.getCurrentObjectStates();
     if (!stateMap.contains("A0100")) {
-        qDebug() << "[Renderer] No state found for A0100";
+        //qDebug() << "[Renderer] No state found for A0100";
         return;
     }
 
@@ -42,22 +42,22 @@ void Renderer::renderScene(const SceneManager& scene, const QVector3D& eye) {
     double lat = state.position.y();
     double alt = state.position.z();
 
-    qDebug().noquote() << QString("[Renderer] Pos: lon=%1  lat=%2  alt=%3")
-                          .arg(lon, 0, 'f', 10)
-                          .arg(lat, 0, 'f', 10)
-                          .arg(alt, 0, 'f', 10);
+    // qDebug().noquote() << QString("[Renderer] Pos: lon=%1  lat=%2  alt=%3")
+    //                       .arg(lon, 0, 'f', 10)
+    //                       .arg(lat, 0, 'f', 10)
+    //                       .arg(alt, 0, 'f', 10);
 
     QVector3D pos = geoToSphere(lat, lon, EARTH_RADIUS + HEIGHT_EXAGGERATION * alt / 6371000.0);
 
-    qDebug() << "[Renderer] Converted 3D position:" << pos;
+    //qDebug() << "[Renderer] Converted 3D position:" << pos;
 
     static QVector3D lastPos;
-    qDebug() << "[Renderer] Delta = " << (pos - lastPos).length();
+    //qDebug() << "[Renderer] Delta = " << (pos - lastPos).length();
     lastPos = pos;
 
-    qDebug() << "[Camera] Eye =" << eye;
-    qDebug() << "[Camera → Aircraft Distance] =" << (pos - eye).length();
-    qDebug() << "[Renderer] Distance from center:" << pos.length();
+    //qDebug() << "[Camera] Eye =" << eye;
+    //qDebug() << "[Camera → Aircraft Distance] =" << (pos - eye).length();
+    //qDebug() << "[Renderer] Distance from center:" << pos.length();
 
      // ✅ 绘制轨迹线
      static std::vector<QVector3D> trajectory;
@@ -83,7 +83,7 @@ void Renderer::renderScene(const SceneManager& scene, const QVector3D& eye) {
     glRotatef(180, 0, 0, 1);
     glScalef(AIRCRAFT_SCALE, AIRCRAFT_SCALE, AIRCRAFT_SCALE);
 
-    qDebug() << "[Renderer] Rendering aircraft model at" << pos;
+    //qDebug() << "[Renderer] Rendering aircraft model at" << pos;
     glPushAttrib(GL_CURRENT_BIT);
     glColor3f(1, 0, 0);
     aircraftModel.render();

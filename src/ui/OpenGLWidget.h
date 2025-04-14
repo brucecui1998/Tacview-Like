@@ -44,6 +44,8 @@ public:
     explicit OpenGLWidget(QWidget* parent = nullptr);
     void setFlightDataProvider(IFlightDataProvider* provider);
 
+    void drawCoordinateAxes();
+
 public slots:
     void startPlayback();
 
