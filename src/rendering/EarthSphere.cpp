@@ -1,4 +1,5 @@
 #include "EarthSphere.h"
+#include "Config.h"  // 引入 EARTH_RADIUS 定义
 #include <QDir>
 #include <QImage>
 #include <QDebug>
@@ -27,11 +28,7 @@ void EarthSphere::setSphereQuality(SphereQuality quality) {
     }
 }
 
-// 在 3D 空间中按经纬度网格生成一个单位球体的顶点和纹理坐标
-// 也就是你看到的地球球面模型（用于绘制地球贴图）
-// 1、按纬度（stacks）和经度（slices）划分球面网格
-// 2、计算每个顶点的三维坐标 (x, y, z)
-// 3、计算每个顶点对应的纹理坐标 (u, v)（贴地球贴图用）
+// 使用真实地球半径（单位 km）按经纬度生成球体网格顶点
 void EarthSphere::generateSphere(int stacks_, int slices_) {
     vertices.clear();
     texCoords.clear();
@@ -47,14 +44,16 @@ void EarthSphere::generateSphere(int stacks_, int slices_) {
 
         for (int j = 0; j <= slices; ++j) {
             float lng = 2 * PI * (float)j / slices;
-            float x = zr * cos(lng);
-            float y = zr * sin(lng);
+            float x = EARTH_RADIUS * zr * cos(lng);
+            float y = EARTH_RADIUS * zr * sin(lng);
+            float zz = EARTH_RADIUS * z;
+
             float u = (float)j / slices;
             float v = 1.0f - (float)i / stacks;
 
             vertices.push_back(x);
             vertices.push_back(y);
-            vertices.push_back(z);
+            vertices.push_back(zz);
             texCoords.push_back(u);
             texCoords.push_back(v);
         }

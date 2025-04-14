@@ -18,18 +18,27 @@ public:
 
 private:
     QPoint lastPos;
-    float rotX = 0.0f;
-    float rotY = 0.0f;
+    float rotX = 0.0f;        // 轨道俯仰（左键控制）
+    float rotY = 0.0f;        // 水平旋转（左键控制）
     
     float distance = CAMERA_DEFAULT_DISTANCE;
-    float distancePitch = 0.0f;
+    float rightDragPitch = 0.0f;  // 右键俯仰
+    float rollAngle = 0.0f;       // 倾斜角度
 
     bool leftButtonPressed = false;
     bool rightButtonPressed = false;
-    // ✅ 控制灵敏度参数
-    const float rotateSensitivity = 0.2f;        // 左键旋转灵敏度
-    const float pitchSensitivity = 0.2f;       // 右键俯仰灵敏度
-    const float zoomSensitivity = 0.0001f;        // 滚轮缩放灵敏度
 
-    float rightDragElevation = 0.0f;  // ✅ 垂直俯视角，绕 X 或 Y 轴的额外旋转
+    // 控制参数
+    const float rotateSensitivity = 0.2f;    // 左键旋转
+    const float moveSensitivity = 50.0f;     // 前后移动
+    const float rollSensitivity = 2.0f;      // 倾斜灵敏度
+    const float zoomSensitivity = 0.0001f;   // 滚轮缩放
+    // 新增高度偏移量控制
+    float heightOffset = 0.0f; // 相机高度偏移量（垂直移动）
+    // 调整灵敏度参数
+    const float verticalMoveSensitivity = 20.0f;  // 高度灵敏度大幅提升
+    const float pitchSensitivity = 6.0f;         // 俯仰基础灵敏度
+    const float pitchContribution = 0.2f;         // 俯仰贡献比例降低
+    
+
 };
