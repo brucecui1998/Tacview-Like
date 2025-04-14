@@ -51,8 +51,11 @@ if (MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
     # 设置 Visual Studio 调试时的工作目录
     set_target_properties(${PROJECT_NAME} PROPERTIES
-    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/$<CONFIG>"
-    )
+    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/$<CONFIG>")
+    # 设置多核编译标志
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /MP") # 对C文件也启用多核编译
+    
 endif()
 
 

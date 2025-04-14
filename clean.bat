@@ -11,3 +11,12 @@ if exist bin (
 ) else (
     echo === bin directory does not exist ===
 )
+
+REM 删除build目录
+if exist build (
+    echo === Deleting build directory ===
+    rmdir /s /q build
+    echo === build directory deleted ===
+) else (
+    echo === build directory does not exist ===
+)

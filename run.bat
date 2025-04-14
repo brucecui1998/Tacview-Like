@@ -45,7 +45,7 @@ REM ===========================
 REM Build the project
 REM ===========================
 echo === [CMake] Building configuration ===
-cmake --build build --config Release --parallel
+cmake --build build --config Release --parallel 88
 
 if %errorlevel% neq 0 (
     echo [ERROR] Build failed.
