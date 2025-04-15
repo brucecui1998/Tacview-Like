@@ -81,3 +81,9 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     "${RESOURCE_DIR}" "${OUTPUT_RESOURCE_DIR}"
 )
+
+
+# 添加子项目example
+set(GLFW_ROOT "${CMAKE_SOURCE_DIR}/external/GLFW-3.4")
+set(GLEW_ROOT "${CMAKE_SOURCE_DIR}/external/glew")
+add_subdirectory(example/triangle)
