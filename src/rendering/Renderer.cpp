@@ -32,7 +32,7 @@ QVector3D geoToSphere(double latDeg, double lonDeg, double radius) {
 void Renderer::renderScene(const SceneManager& scene, const QVector3D& eye) {
     QMap<QString, ObjectState> stateMap = scene.getCurrentObjectStates();
     if (!stateMap.contains("A0100")) {
-        qDebug() << "[Renderer] No state found for A0100";
+        //qDebug() << "[Renderer] No state found for A0100";
         return;
     }
 

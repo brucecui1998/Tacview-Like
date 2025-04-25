@@ -85,8 +85,13 @@ void OpenGLWidget::resizeGL(int w, int h) {
 }
 
 void OpenGLWidget::mousePressEvent(QMouseEvent* event) {
-    camera.mousePress(event->x(), event->y(), event->buttons());
+    camera.mousePress(event->pos().x(), event->pos().y(), event->buttons());
 }
+
+void OpenGLWidget::mouseReleaseEvent(QMouseEvent* event) {
+    camera.mouseRelease(event->pos().x(), event->pos().y(), event->buttons());
+}
+
 
 void OpenGLWidget::mouseMoveEvent(QMouseEvent* event) {
     camera.mouseMove(event->x(), event->y(), event->buttons());  // ✅ 传入按钮状态

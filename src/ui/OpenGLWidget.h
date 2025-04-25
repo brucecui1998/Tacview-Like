@@ -36,6 +36,7 @@
 #include "scene/SceneManager.h"
 #include "rendering/Renderer.h"
 #include "platform/MouseCameraController.h"
+#include "platform/OrbitalCameraController.h"
 #include "ui/HudRenderer.h"  
 
 class OpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
@@ -53,13 +54,14 @@ protected:
     void resizeGL(int w, int h) override;
 
     void mousePressEvent(QMouseEvent* event) override;
-    void mouseMoveEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent* event) override;
 
 private:
     SceneManager scene;
     Renderer renderer;
-    MouseCameraController camera;
+    OrbitalCameraController camera;
     HudRenderer hudRenderer;
 
     QTimer playbackTimer;
