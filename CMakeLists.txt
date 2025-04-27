@@ -48,7 +48,7 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${SRC_LIB})
 add_subdirectory(tools/win_my_grep)
 
 if (MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
+    target_compile_options(${PROJECT_NAME} PRIVATE /utf-8 /MP)
     # 设置 Visual Studio 调试时的工作目录
     set_target_properties(${PROJECT_NAME} PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/$<CONFIG>"
