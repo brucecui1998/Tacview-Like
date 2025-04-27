@@ -89,7 +89,7 @@ int searchStrInFile(const char* szFileName, const char* pDstContent, const wchar
 				lineNumber = k + 1;
 			}
 
-			printf("found string:%s in %s, line:%d\r\n", pDstContent, szFileName, lineNumber);
+			printf("found string:%s in %s:%d\r\n", pDstContent, szFileName, lineNumber);
 			found = true;
 		}
 	}

@@ -36,6 +36,8 @@ bool ObjModel::load(const QString& filename) {
             minY = qMin(minY, v.y()); maxY = qMax(maxY, v.y());
             minZ = qMin(minZ, v.z()); maxZ = qMax(maxZ, v.z());
 
+            //qDebug() << "[ObjModel] Model height before scaling:" << (maxY - minY);
+
             if (idx.normal_index >= 0 && size_t(3 * idx.normal_index + 2) < attrib.normals.size()) {
                 int ni = 3 * idx.normal_index;
                 normals.append(QVector3D(
@@ -51,12 +53,15 @@ bool ObjModel::load(const QString& filename) {
 
     faceCount = vertices.size() / 3;
 
-    // ✅ 自动归一化尺寸
+    // ✅ 以机腹（Y轴最低点）为原点进行对齐归一化
     float maxExtent = qMax(qMax(maxX - minX, maxY - minY), maxZ - minZ);
     float scale = 1.0f / maxExtent;
 
     for (int i = 0; i < vertices.size(); ++i) {
-        vertices[i] *= scale;
+        // 平移到底部对齐 + 缩放
+        vertices[i].setX((vertices[i].x() - (minX + maxX) / 2) * scale); // X轴仍然居中
+        vertices[i].setY((vertices[i].y() - minY) * scale);              // ✅ Y轴底部对齐
+        vertices[i].setZ((vertices[i].z() - (minZ + maxZ) / 2) * scale); // Z轴仍然居中
     }
 
     qDebug() << "[ObjModel] Normalized and loaded vertices:" << vertices.size();

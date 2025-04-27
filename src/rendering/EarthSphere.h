@@ -4,15 +4,9 @@
  * @class EarthSphere
  * @brief 地球球体渲染模块，生成带贴图的 3D 球面模型。
  *
- * EarthSphere 是渲染模块中的地理基础元素，负责构建一个单位球体（半径 = 1.0，中心在原点），
+ * EarthSphere 是渲染模块中的地理基础元素，负责构建一个球体
  * 并加载地球纹理贴图，实现贴图地球在 3D 空间中的可视化。
  *
- * ◆ 什么是单位球？
- * 本类生成的球体没有自定义 radius 参数，默认构造方式使用标准球面方程：
- *   x = cos(lat) * cos(lng)
- *   y = cos(lat) * sin(lng)
- *   z = sin(lat)
- * 因此生成的所有顶点都在以原点为中心、半径为 1 的球面上，即为“单位球”。
  *
  * 在实际显示时，观察距离由相机控制（如 MouseCameraController），球体的视觉比例通过 OpenGL 缩放或视角决定。
  *
@@ -45,6 +39,8 @@ public:
     void init();
     void render();
     GLuint getTextureId() const;
+    // 地球真实半径常量（单位：米）
+    static constexpr float EARTH_RADIUS = 6371000.0f;
 
 
 private:

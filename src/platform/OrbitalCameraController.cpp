@@ -1,86 +1,85 @@
 #include "windows.h"
 #include "platform/OrbitalCameraController.h"
 #include <GL/gl.h>
-#include "OrbitalCameraController.h"
+#include "rendering/EarthSphere.h"
+#include <GL/glu.h> // 新增
 
 OrbitalCameraController::OrbitalCameraController()
-    : distance(4.0f), yaw(180.0f), pitch(30.0f), sensitivity(0.3f), zoomSpeed(0.001f) {}
+    : distance(EarthSphere::EARTH_RADIUS * 5.0f),
+      yaw(0.0f),
+      pitch(45.0f), // 默认45度俯角
+      sensitivity(0.2f),
+      zoomSpeed(0.001f) {}
+
+void OrbitalCameraController::setPitchAngle(float degrees) {
+    pitch = std::clamp(degrees, -89.0f, 89.0f);
+}
 
 void OrbitalCameraController::mousePress(int x, int y, Qt::MouseButtons buttons) {
     lastPos = QPoint(x, y);
-    currentButtons |= buttons; // 记录当前按下的所有按钮
+    currentButtons = buttons;
 }
 
 void OrbitalCameraController::mouseRelease(int x, int y, Qt::MouseButtons buttons) {
-    qDebug() << "[Camera] mouseRelease triggered. buttons:" << buttons;
     currentButtons = Qt::NoButton;
-
-    qDebug() << "[Camera] After release, currentButtons:" << currentButtons;
 }
-
-
 
 void OrbitalCameraController::mouseMove(int x, int y, Qt::MouseButtons /*buttons*/) {
-    qDebug() << "[Camera] mouseMove triggered. currentButtons:" << currentButtons;
+    if (currentButtons & Qt::LeftButton) {
+        QPoint delta = QPoint(x, y) - lastPos;
+        lastPos = QPoint(x, y);
 
-    QPoint currentPos(x, y);
-    QPoint delta = currentPos - lastPos;
-    lastPos = currentPos;
-
-    // ✅ 只处理单一按键
-    if ((currentButtons & Qt::LeftButton) && !(currentButtons & Qt::RightButton)) {
-        yaw += delta.x() * sensitivity;
-        pitch += delta.y() * sensitivity;
+        yaw -= delta.x() * sensitivity; // 水平旋转
+        pitch += delta.y() * sensitivity; // 俯仰控制
         pitch = std::clamp(pitch, -89.0f, 89.0f);
-        qDebug() << "[Camera] Left Drag - Yaw:" << yaw << "Pitch:" << pitch;
-    }
-    else if ((currentButtons & Qt::RightButton) && !(currentButtons & Qt::LeftButton)) {
-        elevation += delta.y() * 0.02f;
-        elevation = std::clamp(elevation, -5.0f, 5.0f);
-        qDebug() << "[Camera] Right Drag - Elevation:" << elevation;
-    }
-    else {
-        qDebug() << "[Camera] Ignored drag: ambiguous button state.";
+        
+        // 保持yaw在0-360范围内
+        if (yaw > 360.0f) yaw -= 360.0f;
+        if (yaw < 0.0f) yaw += 360.0f;
     }
 }
 
-
-
+// 修改缩放范围限制
 void OrbitalCameraController::wheelZoom(int delta) {
     float zoomFactor = std::pow(1.1f, -delta / 120.0f);
     distance *= zoomFactor;
-    distance = std::clamp(distance, 1.2f, 20.0f);
-
-    qDebug() << "[Camera] Zoom distance:" << distance;
+    distance = std::clamp(distance, 
+                         EarthSphere::EARTH_RADIUS * 1.1f,  // 最小距离：1.1倍地球半径
+                         EarthSphere::EARTH_RADIUS * 50.0f); // 最大距离：50倍地球半径
 }
 
 void OrbitalCameraController::applyCamera() {
+    // 1. 设置视口（必须在窗口大小改变时更新）
+    glViewport(0, 0, viewportWidth, viewportHeight);
+    
+    // 2. 计算相机位置（球坐标系转笛卡尔坐标）
     float radYaw = qDegreesToRadians(yaw);
     float radPitch = qDegreesToRadians(pitch);
+    eyePosition.setX(distance * cos(radPitch) * sin(radYaw));
+    eyePosition.setY(distance * sin(radPitch));
+    eyePosition.setZ(distance * cos(radPitch) * cos(radYaw));
 
-    // ✅ 基础相机视角
-    QVector3D eye;
-    eye.setX(distance * qCos(radPitch) * qSin(radYaw));
-    eye.setY(distance * qSin(radPitch));
-    eye.setZ(distance * qCos(radPitch) * qCos(radYaw));
+    // 3. 设置投影矩阵（关键修复点！）
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(
+        45.0f, // 垂直视野角度
+        (float)viewportWidth / viewportHeight, // 宽高比
+        EarthSphere::EARTH_RADIUS * 0.1f, // 近裁剪面（避免裁切地球）
+        EarthSphere::EARTH_RADIUS * 100.0f // 远裁剪面
+    );
 
-    // ✅ 如果当前是右键按下状态，加入 elevation 偏移
-    if (currentButtons & Qt::RightButton && !(currentButtons & Qt::LeftButton)) {
-        eye.setY(eye.y() + elevation);  // ✅ elevation 只在右键控制时临时加上
-    }
+    // 4. 设置视图矩阵
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(
+        eyePosition.x(), eyePosition.y(), eyePosition.z(), // 相机位置
+        0, 0, 0,  // 观察目标（地球中心）
+        0, 1, 0   // 上向量（Y轴向上）
+    );
 
-    QVector3D target(0, 0, 0);
-
-    view.setToIdentity();
-    view.lookAt(eye, target, QVector3D(0, 1, 0));
-    eyePosition = eye;
-
-    glLoadMatrixf(view.constData());
-
-    qDebug() << "[Camera] Apply - Yaw:" << yaw
-             << "Pitch:" << pitch
-             << "Distance:" << distance
-             << "Elevation (Applied?):" << ((currentButtons & Qt::RightButton) ? elevation : 0.0f);
+    // 5. 调试输出（发布时可移除）
+    qDebug() << "Camera Position:" << eyePosition;
 }
 
 QVector3D OrbitalCameraController::getEye() const {
@@ -88,5 +87,10 @@ QVector3D OrbitalCameraController::getEye() const {
 }
 
 float OrbitalCameraController::getRotationY() const {
-    return yaw;
+    return pitch;
+}
+
+void OrbitalCameraController::setViewportSize(int width, int height) {
+    viewportWidth = width;
+    viewportHeight = height;
 }

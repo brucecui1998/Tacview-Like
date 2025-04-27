@@ -18,7 +18,6 @@ void MouseCameraController::mouseMove(int x, int y, Qt::MouseButtons buttons) {
         rotX += dy * rotateSensitivity;
         rotY += dx * rotateSensitivity;
         rotX = qBound(-179.9f, rotX, 179.9f);
-        //qDebug() << "[mouseMove] rotX is " << rotX;
     } else if (buttons & Qt::RightButton) {
         rightDragElevation += dy * pitchSensitivity;
         rightDragElevation = qBound(-89.0f, rightDragElevation, 89.0f);
@@ -52,12 +51,6 @@ void MouseCameraController::applyCamera() {
     }
 
     QVector3D up = QVector3D::crossProduct(right, viewDir).normalized();
-
-    // 🔍 Debug 输出
-    qDebug() << "[Camera] rotX:" << rotX << "rotY:" << rotY << "distance:" << distance;
-    qDebug() << "[Camera] Eye:" << rotatedEye;
-    qDebug() << "[Camera] ViewDir:" << viewDir;
-    qDebug() << "[Camera] Up:" << up;
 
     gluLookAt(rotatedEye.x(), rotatedEye.y(), rotatedEye.z(),
               center.x(), center.y(), center.z(),

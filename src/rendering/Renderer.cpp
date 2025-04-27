@@ -28,6 +28,23 @@ QVector3D geoToSphere(double latDeg, double lonDeg, double radius) {
     );
 }
 
+QVector3D geoToECEF(double latDeg, double lonDeg, double alt) {
+    constexpr double a = 6378137.0;
+    constexpr double f = 1.0 / 298.257223563;
+    constexpr double e2 = f * (2 - f);
+
+    double lat = qDegreesToRadians(latDeg);
+    double lon = qDegreesToRadians(lonDeg);
+
+    double N = a / sqrt(1 - e2 * pow(sin(lat), 2));
+    double x = (N + alt) * cos(lat) * cos(lon);
+    double y = (N + alt) * cos(lat) * sin(lon);
+    double z = (N * (1 - e2) + alt) * sin(lat);
+
+    return QVector3D(x, y, z);
+}
+
+
 // ✅ 使用单位球 + 高度放大因子（视觉增强）
 void Renderer::renderScene(const SceneManager& scene, const QVector3D& eye) {
     QMap<QString, ObjectState> stateMap = scene.getCurrentObjectStates();
@@ -47,7 +64,7 @@ void Renderer::renderScene(const SceneManager& scene, const QVector3D& eye) {
                           .arg(lat, 0, 'f', 10)
                           .arg(alt, 0, 'f', 10);
 
-    QVector3D pos = geoToSphere(lat, lon, EARTH_RADIUS + HEIGHT_EXAGGERATION * alt / 6371000.0);
+    QVector3D pos = geoToECEF(lat, lon, alt);
 
     qDebug() << "[Renderer] Converted 3D position:" << pos;
 
@@ -76,11 +93,13 @@ void Renderer::renderScene(const SceneManager& scene, const QVector3D& eye) {
     glPushMatrix();
     glTranslatef(pos.x(), pos.y(), pos.z());
 
+    glRotatef(-90, 1, 0, 0);   // 先统一模型“前进方向”朝 Z
+    glRotatef(180, 0, 0, 1);   // 修正为“Z 正方向前进”
+
+    // 然后再施加姿态角（顺序也应为 ZYX 或 YPR）
     glRotatef(state.yaw,   0, 0, 1);
     glRotatef(state.pitch, 1, 0, 0);
     glRotatef(state.roll,  0, 1, 0);
-    glRotatef(-90, 1, 0, 0);
-    glRotatef(180, 0, 0, 1);
     glScalef(AIRCRAFT_SCALE, AIRCRAFT_SCALE, AIRCRAFT_SCALE);
 
     qDebug() << "[Renderer] Rendering aircraft model at" << pos;

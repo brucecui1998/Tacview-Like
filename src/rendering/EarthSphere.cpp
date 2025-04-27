@@ -8,8 +8,11 @@ EarthSphere::EarthSphere() {}
 EarthSphere::~EarthSphere() {}
 
 void EarthSphere::init() {
+    
     initializeOpenGLFunctions();
+
     setSphereQuality(SphereQuality::Medium);
+
     loadTexture();
 }
 
@@ -27,7 +30,7 @@ void EarthSphere::setSphereQuality(SphereQuality quality) {
     }
 }
 
-// 在 3D 空间中按经纬度网格生成一个单位球体的顶点和纹理坐标
+// 在 3D 空间中按经纬度网格生成球体的顶点和纹理坐标
 // 也就是你看到的地球球面模型（用于绘制地球贴图）
 // 1、按纬度（stacks）和经度（slices）划分球面网格
 // 2、计算每个顶点的三维坐标 (x, y, z)
@@ -42,8 +45,8 @@ void EarthSphere::generateSphere(int stacks_, int slices_) {
 
     for (int i = 0; i <= stacks; ++i) {
         float lat = PI * (-0.5f + (float)i / stacks);
-        float z = sin(lat);
-        float zr = cos(lat);
+        float z = sin(lat) * EARTH_RADIUS;  // 应用真实半径
+        float zr = cos(lat) * EARTH_RADIUS; // 应用真实半径
 
         for (int j = 0; j <= slices; ++j) {
             float lng = 2 * PI * (float)j / slices;
@@ -60,6 +63,7 @@ void EarthSphere::generateSphere(int stacks_, int slices_) {
         }
     }
 }
+
 
 void EarthSphere::loadTexture() {
     QString path = QDir::currentPath() + "/resources/earth.jpg";
@@ -88,10 +92,16 @@ void EarthSphere::loadTexture() {
 }
 
 void EarthSphere::render() {
-    if (!textureId) return;
+    if (!textureId) {
+        qCritical() << "渲染中止：无效纹理ID";
+        return;
+    }
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, textureId);
+    // 添加OpenGL状态检查
+    GLint boundTexture;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundTexture);
 
     for (int i = 0; i < stacks; ++i) {
         glBegin(GL_TRIANGLE_STRIP);
@@ -106,8 +116,11 @@ void EarthSphere::render() {
             glVertex3f(vertices[3 * idx2], vertices[3 * idx2 + 1], vertices[3 * idx2 + 2]);
         }
         glEnd();
+        GLenum err = glGetError();
+        if (err != GL_NO_ERROR) {
+            qWarning() << "渲染过程中GL错误（层" << i << "）:" << gluErrorString(err);
+        }
     }
-
     glDisable(GL_TEXTURE_2D);
 }
 
