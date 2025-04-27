@@ -29,7 +29,7 @@ public:
     Renderer();
     void initialize();
     void renderEarth();
-    void renderScene(const SceneManager& scene);
+    void renderScene(const SceneManager& scene, const QVector3D& eye);
     
 
 private:
